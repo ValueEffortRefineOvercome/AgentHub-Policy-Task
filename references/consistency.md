@@ -34,11 +34,20 @@ bash .claude/skills/task-policy/env/tools.sh
 
 #### 프로젝트 런타임 — 버전 파일을 커밋한다
 
-Node·Python 등은 **버전 파일을 저장소에 넣어** 고정한다 (`.nvmrc`,
-`.python-version`, `mise.toml`, `.tool-versions` 중 하나). lockfile 도 커밋한다.
+**버전 파일을 저장소에 넣어** 고정한다. 문서에 "Node 20 쓰세요" 로 적는 건 고정이
+아니다 — 읽는 사람에게 의존한다. 파일로 두면 도구가 읽는다.
 
-문서에 "Node 20 쓰세요" 로 적는 건 고정이 아니다 — 읽는 사람에게 의존한다.
-파일로 두면 도구가 읽는다. 스택이 정해지면 어느 파일을 쓰는지 여기에 적는다.
+| 스택 | 버전 파일 | lockfile | 커밋하지 않는 것 |
+|---|---|---|---|
+| Python | `.python-version` | `uv.lock` 또는 `requirements.txt` | `.venv/` |
+| Node | `.nvmrc` | `package-lock.json` | `node_modules/` |
+| Dart | `.fvmrc` | `pubspec.lock` | `.dart_tool/` |
+| Unity | `ProjectSettings/ProjectVersion.txt` (이미 있다) | — | `Library/` `Temp/` |
+
+여러 스택을 섞으면 `mise.toml` 또는 `.tool-versions` 하나로 묶는다.
+
+제외 목록은 전부 **머신에 묶인 것**이다 — 경로 규칙과 같은 이유로 커밋하지 않는다.
+스택별 게이트 명령은 `/pipeline-policy` 의 `references/<스택>.md`.
 
 ## 경로는 머신에 묶이지 않아야 한다
 - 추적되는 파일에 **절대경로 금지** — `C:\...`, `/home/...`, 사용자명, 드라이브 문자 <!-- abs-path-ok: 금지 예시 -->
