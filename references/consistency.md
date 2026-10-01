@@ -12,7 +12,33 @@
 | 정책 버전 | 서브모듈 SHA 핀. 올릴 때만 `--remote` |
 | 줄바꿈 | `.gitattributes` 에 `* text=auto eol=lf` |
 | hook 동작 | `.claude/settings.json` 을 커밋한다 (`settings.local.json` 은 개인용) |
-| 도구 버전 | **미정** — 스택이 정해지면 여기에 적는다 |
+| 도구 기능 | `env/tools.sh` 로 검사. 새 PC 세팅 때 이것부터 돌린다 |
+| 프로젝트 런타임 | 버전 파일을 저장소에 커밋 (아래) |
+
+#### 도구 — 숫자가 아니라 기능을 확인한다
+
+```bash
+bash .claude/skills/task-policy/env/tools.sh
+```
+
+| 도구 | 왜 필요한가 |
+|---|---|
+| git ≥ 2.25 | `switch`(2.23) · `branch --show-current`(2.22) · `submodule set-url`(2.25) |
+| gh | `pr create --draft` · `pr list --draft` · `pr edit --body-file` · `pr merge --delete-branch` · `pr ready` |
+| bash ≥ 3.2 | hook·lint 스크립트 |
+| jq | **쓰지 않는다.** 없는 PC 에서 hook 이 죽지 않게 일부러 피했다 |
+
+버전 숫자를 표에만 적어두는 건 고정이 아니다 — 아무도 안 읽으면 다른 PC 에서
+그대로 깨진다. 그래서 `env/tools.sh` 가 **플래그 존재 여부를 직접 확인한다.**
+벤더 빌드·패치 번호에서 버전 숫자는 믿기 어렵고, 정작 필요한 건 그 플래그다.
+
+#### 프로젝트 런타임 — 버전 파일을 커밋한다
+
+Node·Python 등은 **버전 파일을 저장소에 넣어** 고정한다 (`.nvmrc`,
+`.python-version`, `mise.toml`, `.tool-versions` 중 하나). lockfile 도 커밋한다.
+
+문서에 "Node 20 쓰세요" 로 적는 건 고정이 아니다 — 읽는 사람에게 의존한다.
+파일로 두면 도구가 읽는다. 스택이 정해지면 어느 파일을 쓰는지 여기에 적는다.
 
 ## 경로는 머신에 묶이지 않아야 한다
 - 추적되는 파일에 **절대경로 금지** — `C:\...`, `/home/...`, 사용자명, 드라이브 문자 <!-- abs-path-ok: 금지 예시 -->
